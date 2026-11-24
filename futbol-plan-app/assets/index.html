@@ -264,7 +264,8 @@ function sessionFor(key, w){
         ['6. Caminata con mancuerna de un lado',`${sets} × 20 m por lado`,'Tronco firme, sin inclinarte. Estabilidad para los choques.']]}]};
     if(F2) return {title:'Fuerza de piernas: series pesadas',place:'Gimnasio',dur:'70–80′',blocks:[
       {h:'Previo',items:[WU_G]},
-      {h:'Potencia',items:[['1. Salto al cajón','4 × 3','Aterrizaje suave y bajá caminando. Pausa 90″.']]},
+      {h:'Potencia',items:[['1a. Salto al cajón','4 × 3','Aterrizaje suave y bajá caminando. Pausa 90″.'],
+        ['1b. Subida explosiva al cajón','3 × 4 por pierna','Un pie arriba del cajón: empujá fuerte con esa pierna y subí con impulso de brazos, como en una arrancada. Bajá caminando. Pausa 60″.']]},
       {h:'Fuerza',items:[
         ['2. Sentadilla goblet o con 2 mancuernas al hombro',`${n===7?5:4} × 6`,'RIR 2. Hasta paralelo si la rodilla está en verde; si no, a cajón. Con 2 mancuernas, repartí el peso entre las dos.',['sq',1.05]],
         ['3. Sentadilla búlgara con mancuernas','3 × 6–8 por pierna','Pie de atrás sobre el banco. Torso apenas inclinado.'],
@@ -276,7 +277,8 @@ function sessionFor(key, w){
     if(F3) return {title:'Piernas: potencia y contraste',place:'Gimnasio',dur:'60–70′',blocks:[
       {h:'Previo',items:[WU_G]},
       {h:'Potencia',items:[
-        ['1. Sentadilla con salto con mancuernas livianas','4 × 4','Entre 5 y 10 kg por mano. Máxima altura y aterrizaje suave.'],
+        ['1a. Sentadilla con salto con mancuernas livianas','4 × 4','Entre 5 y 10 kg por mano. Máxima altura y aterrizaje suave.'],
+        ['1b. Subida explosiva al cajón con mancuernas livianas','3 × 4 por pierna','Entre 4 y 8 kg por mano. Lo más rápido posible y bajá caminando.'],
         ['2. Contraste: búlgara pesada + saltos en zancada',n===9?'4 × (5 + 4)':'3 × (5 + 4)','5 búlgaras pesadas por pierna e inmediatamente 4 saltos en zancada alternando. Pausa 2′.'],
         ['3. Hip thrust explosivo','3 × 5','Bajá controlado y subí lo más rápido posible.'],
         ['4. Pogos (saltitos de tobillo)','3 × 15','Rodillas casi rígidas, contacto corto con el piso.']]},
@@ -304,13 +306,13 @@ function sessionFor(key, w){
       {h:'Fuerza (superseries)',items:[
         ['2a. Press de banco con mancuernas',`${sets} × 10`,s1?'Test de pesos: 8 repeticiones con RIR 2. Anotalo.':'RIR 3.',s1?null:['bench',.93]],
         ['2b. Remo a una mano con mancuerna',`${sets} × 10 por brazo`,''],
-        ['3a. Press militar de pie con mancuernas',`${sets} × 8–10`,''],
+        ['3a. Press militar arrodillado a una mano',`${sets} × 8 por brazo`,'Con la rodilla del lado del brazo apoyada. Glúteo apretado y sin inclinarte hacia el costado.'],
         ['3b. Dominadas (asistidas o solo la bajada) o jalón',`${sets} × 6–10`,'Si no hacés dominadas, saltá arriba y bajá en 4″.'],
         ['4a. Zancada hacia atrás con mancuernas',`${sets} × 8 por pierna`,'Hacia atrás carga menos la rodilla.'],
         ['4b. Puente de glúteo a una pierna',`${sets} × 12 por pierna`,'']]},
       {h:'Core y cuello',items:[
         ['5. Dead bug + plancha lateral',`${sets} × 10 + 30″ por lado`,'Lumbar pegada al piso en el dead bug.'],
-        ['6. Pallof con tu banda','2 × 10 por lado','Estirás los brazos sin dejar que te gire.'],
+        ['6. Plancha con arrastre de mancuerna','2 × 6 por lado','En plancha alta, pasá la mancuerna de un lado al otro con una mano sin girar la cadera. Estabilidad para las divididas.'],
         ['7. Isometría de cuello con la mano','2 × 10″ en 4 direcciones','Empujá sin mover la cabeza. Para cabecear firme.']]}]};
     if(F2) return {title:'Tren superior pesado y saltos de central',place:'Gimnasio',dur:'70′',blocks:[
       {h:'Previo',items:[WU_G]},
@@ -334,7 +336,7 @@ function sessionFor(key, w){
         ['1b. Skater reactivo','3 × 6 por lado','Sin pausa, rebote rápido.'],
         ['1c. Pogos laterales','2 × 10','']]},
       {h:'Potencia y fuerza',items:[
-        ['2. Swing con kettlebell de 14 kg','4 × 10','Golpe de cadera explosivo.'],
+        ['2. Peso muerto con mancuernas y triple extensión','4 × 5','Bajás como en el rumano y subís explosivo extendiendo cadera, rodillas y tobillos hasta quedar en puntas de pie. Peso moderado: importa la velocidad.'],
         ['3. Contraste: press de banco + flexiones explosivas','3 × (5 + 5)','5 pesadas e inmediatamente 5 flexiones rápidas.',['bench',1.08]],
         ['4. Remo + dominadas','3 × 6 + 3 × 5','']]},
       {h:'Core',items:[
@@ -639,7 +641,7 @@ function renderGuia(){
     <div class="field"><label for="imp">Pegá una copia para restaurarla</label><textarea id="imp" placeholder='{"done":...}'></textarea></div>
     <div class="row"><button class="btn small" type="button" id="imp-btn" onclick="importData()">Restaurar copia</button></div>
   </div>
-  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo.</p>`;
+  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo. Versión 1.1.</p>`;
 }
 function exportData(){ const t=JSON.stringify({done,tests:res}); if(A) A.share(t); else copyText(t); }
 let impArmed=false;
