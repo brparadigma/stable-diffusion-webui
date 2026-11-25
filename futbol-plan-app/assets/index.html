@@ -208,6 +208,9 @@ const TESTS = [{id:'t1',date:'2026-12-12',label:'Test 1'},{id:'t2',date:'2027-01
 /* ---------- estado ---------- */
 let done = store.get('pvc-done',{});
 let res = store.get('pvc-tests',{});
+/* La versión 1.1 guardaba pesos de mancuernas: se descartan porque ahora el test es con barra. */
+Object.values(res).forEach(r=>{ if(r && 'rdl' in r){ delete r.rdl; delete r.sq; delete r.bench; } });
+store.set('pvc-tests',res);
 let selWeek = null;
 let openForm = null;
 
@@ -215,10 +218,9 @@ function latest(field){ let v=null; TESTS.forEach(t=>{ const r=res[t.id]; if(r &
 function vam(){ const t=latest('t2000'); return t ? 2000/t : null; }
 function dist(sec,pct,turns=0){ const v=vam(); return v ? `${Math.round(v*sec*pct/100)-turns*4} m` : null; }
 function distTxt(sec,pct,turns=0){ return dist(sec,pct,turns) || 'la distancia que te da el test de 2000 m'; }
-const SUGLBL = {sq:'de la mancuerna',rdl:'por mancuerna',bench:'por mancuerna'};
-function sug(k,f){ const w=latest(k); if(!w) return null; return `Peso sugerido: ~${Math.max(2,Math.round(w*f/2)*2)} kg ${SUGLBL[k]}`; }
+function sug(k,f){ const w=latest(k); if(!w) return null; const kg=Math.max(20,Math.round(w*f/2.5)*2.5); return `Peso sugerido: ~${String(kg).replace('.',',')} kg en total (barra + discos)`; }
 function testOf(dateIso){ return TESTS.find(t=>t.date===dateIso); }
-function hasResults(id){ const r=res[id]; return !!(r && (r.t2000||r.sprint30||r.cmj||r.sq||r.rdl||r.bench)); }
+function hasResults(id){ const r=res[id]; return !!(r && (r.t2000||r.sprint30||r.cmj||r.sq||r.dl||r.bench)); }
 
 /* ---------- sesiones ---------- */
 const WU_G = ['Entrada en calor de gimnasio','10–12′','Ver la pestaña Guía.'];
@@ -253,44 +255,45 @@ function sessionFor(key, w){
       {h:'Previo',items:[WU_G]},
       {h:'Rodilla',items:[['1. Sentadilla isométrica contra la pared',`${sets} × 30–45″`,'Rodillas a 60–70°. Sin dolor. Calma la rótula y activa cuádriceps.']]},
       {h:'Fuerza (superseries: alternás a y b)',items:[
-        ['2a. Sentadilla goblet a cajón',`${sets} × 10`,s1?'Test de pesos: buscá con qué peso hacés 8 repeticiones con RIR 2 y anotalo.':'Bajá en 3″ hasta tocar el cajón y subí. RIR 3.',s1?null:['sq',.93]],
+        ['2a. Sentadilla con barra a banco',`${sets} × 8`,s1?'Test de pesos: buscá con qué peso hacés 8 repeticiones con RIR 2 y cargalo en la pestaña Tests.':'Dentro del rack y con las seguridades puestas. Bajá en 3″ hasta tocar el banco plano y subí. Si el banco te queda bajo y molesta la rodilla, poné un step arriba. RIR 3.',s1?null:['sq',.9]],
         ['2b. Copenhagen corto (apoyo en rodilla)',`${sets} × 15–20″ por lado`,'Aductores. Clave para prevenir pubalgia.'],
-        ['3a. Peso muerto rumano con mancuernas',`${sets} × 10`,s1?'Test de pesos: 8 repeticiones con RIR 2. Anotalo.':'Espalda neutra, rodillas apenas flexionadas, sentí los isquios.',s1?null:['rdl',.93]],
+        ['3a. Peso muerto rumano con barra',`${sets} × 8`,s1?'Test de pesos: hacé peso muerto convencional, 8 repeticiones con RIR 2, y cargalo en Tests.':'Barra pegada a las piernas, espalda neutra, rodillas apenas flexionadas. Sentí los isquios.',s1?null:['dl',.8]],
         ['3b. Plancha frontal',`${sets} × 30–40″`,'Glúteos apretados, sin hundir la cadera.'],
-        ['4a. Subida al cajón (step-up)',`${sets} × 8 por pierna`,'Cajón a media altura. Rodilla alineada con el pie.'],
+        ['4a. Subida al banco (step-up)',`${sets} × 8 por pierna`,'Banco plano o step con elevadores. Rodilla alineada con el pie. Cuando te quede fácil, con mancuernas.'],
         ['4b. Gemelo a una pierna en escalón',`${sets} × 12–15`,'Bajá lento.']]},
       {h:'Prevención',items:[
         ['5. Nórdico excéntrico',{1:'2 × 3',2:'3 × 4',3:'3 × 5',4:'2 × 4'}[n],'Talones anclados bajo un banco cargado o que alguien te los sostenga. Bajá lo más lento posible y volvé con las manos.'],
         ['6. Caminata con mancuerna de un lado',`${sets} × 20 m por lado`,'Tronco firme, sin inclinarte. Estabilidad para los choques.']]}]};
     if(F2) return {title:'Fuerza de piernas: series pesadas',place:'Gimnasio',dur:'70–80′',blocks:[
       {h:'Previo',items:[WU_G]},
-      {h:'Potencia',items:[['1a. Salto al cajón','4 × 3','Aterrizaje suave y bajá caminando. Pausa 90″.'],
-        ['1b. Subida explosiva al cajón','3 × 4 por pierna','Un pie arriba del cajón: empujá fuerte con esa pierna y subí con impulso de brazos, como en una arrancada. Bajá caminando. Pausa 60″.']]},
+      {h:'Potencia',items:[['1a. Salto al step alto','4 × 3','Step con todos sus elevadores, nunca steps sueltos apilados. Aterrizaje suave y bajá caminando. Pausa 90″. Si el step se mueve, hacé salto vertical máximo tocando una marca en la pared.'],
+        ['1b. Subida explosiva al banco','3 × 4 por pierna','Un pie arriba del banco plano: empujá fuerte con esa pierna y subí con impulso de brazos, como en una arrancada. Bajá caminando. Pausa 60″.']]},
       {h:'Fuerza',items:[
-        ['2. Sentadilla goblet o con 2 mancuernas al hombro',`${n===7?5:4} × 6`,'RIR 2. Hasta paralelo si la rodilla está en verde; si no, a cajón. Con 2 mancuernas, repartí el peso entre las dos.',['sq',1.05]],
+        ['2. Sentadilla con barra',`${n===7?5:4} × 6`,'RIR 2. En el rack con seguridades. Hasta paralelo si la rodilla está en verde; si no, a banco.',['sq',1.05]],
         ['3. Sentadilla búlgara con mancuernas','3 × 6–8 por pierna','Pie de atrás sobre el banco. Torso apenas inclinado.'],
-        ['4. Hip thrust con mancuerna pesada','3 × 8','Espalda en el banco, mancuerna sobre la cadera con una toalla. Arriba, 1″ de pausa.']]},
+        ['4. Hip thrust con barra','3 × 8','Espalda en el banco y barra sobre la cadera con una almohadilla o toalla. Arriba, 1″ de pausa. Si hay máquina de hip thrust, sirve igual.']]},
       {h:'Prevención (superserie)',items:[
         ['5. Nórdico',n===7?'3 × 6':'3 × 5','Cada semana intentá frenar un poco más abajo.'],
         ['6a. Copenhagen largo (pie en el banco)','3 × 15–20″ por lado','Si es mucho, volvé al apoyo en rodilla.'],
         ['6b. Gemelo a una pierna con mancuerna','3 × 10','']]}]};
-    if(F3) return {title:'Piernas: potencia y contraste',place:'Gimnasio',dur:'60–70′',blocks:[
+    if(F3) return {title:'Piernas: potencia y contraste',place:'Gimnasio',dur:'70–75′',blocks:[
       {h:'Previo',items:[WU_G]},
       {h:'Potencia',items:[
         ['1a. Sentadilla con salto con mancuernas livianas','4 × 4','Entre 5 y 10 kg por mano. Máxima altura y aterrizaje suave.'],
-        ['1b. Subida explosiva al cajón con mancuernas livianas','3 × 4 por pierna','Entre 4 y 8 kg por mano. Lo más rápido posible y bajá caminando.'],
-        ['2. Contraste: búlgara pesada + saltos en zancada',n===9?'4 × (5 + 4)':'3 × (5 + 4)','5 búlgaras pesadas por pierna e inmediatamente 4 saltos en zancada alternando. Pausa 2′.'],
-        ['3. Hip thrust explosivo','3 × 5','Bajá controlado y subí lo más rápido posible.'],
-        ['4. Pogos (saltitos de tobillo)','3 × 15','Rodillas casi rígidas, contacto corto con el piso.']]},
+        ['1b. Subida explosiva al banco con mancuernas livianas','3 × 4 por pierna','Entre 4 y 8 kg por mano. Lo más rápido posible y bajá caminando.'],
+        ['2. Contraste: sentadilla con barra + salto vertical',n===9?'4 × (4 + 3)':'3 × (4 + 3)','4 sentadillas pesadas (RIR 2) e inmediatamente 3 saltos verticales máximos. Pausa 2–3′.',['sq',1.1]],
+        ['3. Búlgara con mancuernas + saltos en zancada','2 × (5 + 4)','5 búlgaras por pierna e inmediatamente 4 saltos en zancada alternando. Pausa 2′.'],
+        ['4. Hip thrust explosivo','3 × 5','Bajá controlado y subí lo más rápido posible.'],
+        ['5. Pogos (saltitos de tobillo)','3 × 15','Rodillas casi rígidas, contacto corto con el piso.']]},
       {h:'Mantenimiento',items:[
-        ['5. Nórdico','2 × 5',''],
-        ['6. Copenhagen largo','2 × 20″ por lado',''],
-        ['7. Sentadilla isométrica contra la pared','2 × 45″','Cierre para la rodilla.']]}]};
+        ['6. Nórdico','2 × 5',''],
+        ['7. Copenhagen largo','2 × 20″ por lado',''],
+        ['8. Sentadilla isométrica contra la pared','2 × 45″','Cierre para la rodilla.']]}]};
     if(TP) return {title:'Piernas: potencia corta',place:'Gimnasio',dur:'40′',blocks:[
       {h:'Previo',items:[WU_G]},
       {h:'Sesión',items:[
-        ['1. Salto al cajón','3 × 3','Pausa completa.'],
-        ['2. Sentadilla pesada','2 × 3','RIR 3: pesado pero sobrado.',['sq',1.08]],
+        ['1. Salto al step alto','3 × 3','Pausa completa.'],
+        ['2. Sentadilla con barra','2 × 3','RIR 3: pesado pero sobrado.',['sq',1.08]],
         ['3. Hip thrust explosivo','2 × 5',''],
         ['4. Nórdico','1 × 4',''],
         ['5. Copenhagen','2 × 15″ por lado','']]}],
@@ -304,7 +307,7 @@ function sessionFor(key, w){
         ['1a. Salto vertical y aterrizaje clavado',`${sets} × 5`,'Aterrizá y quedate quieto 2″. Rodillas alineadas, sin ruido.'],
         ['1b. Saltito lateral sobre una línea','2 × 6 por lado','Aterrizaje estable. En una pierna si te sentís firme.']]},
       {h:'Fuerza (superseries)',items:[
-        ['2a. Press de banco con mancuernas',`${sets} × 10`,s1?'Test de pesos: 8 repeticiones con RIR 2. Anotalo.':'RIR 3.',s1?null:['bench',.93]],
+        ['2a. Press de banco con barra',`${sets} × 8`,s1?'Test de pesos: 8 repeticiones con RIR 2. Cargalo en Tests.':'Con seguridades o alguien que te asista. RIR 3.',s1?null:['bench',.95]],
         ['2b. Remo a una mano con mancuerna',`${sets} × 10 por brazo`,''],
         ['3a. Press militar arrodillado a una mano',`${sets} × 8 por brazo`,'Con la rodilla del lado del brazo apoyada. Glúteo apretado y sin inclinarte hacia el costado.'],
         ['3b. Dominadas (asistidas o solo la bajada) o jalón',`${sets} × 6–10`,'Si no hacés dominadas, saltá arriba y bajá en 4″.'],
@@ -320,11 +323,11 @@ function sessionFor(key, w){
         ['1a. Salto cabezazo','4 × 3','Dos pasos y salto con impulso de brazos para tocar algo alto.'],
         ['1b. Salto de patinador (skater)','3 × 5 por lado','Aterrizá clavado en una pierna 1″.']]},
       {h:'Fuerza (superseries)',items:[
-        ['2a. Press de banco con mancuernas','4 × 6','RIR 2.',['bench',1.05]],
+        ['2a. Press de banco con barra','4 × 6','RIR 2. Con seguridades o alguien que te asista.',['bench',1.05]],
         ['2b. Remo pesado a una mano','4 × 6 por brazo',''],
         ['3a. Push press con mancuernas','3 × 5','Empujá con las piernas. Fuerza para los choques.'],
         ['3b. Dominadas','3 × máximo','Si pasás de 8, colgate una mancuerna.'],
-        ['4. Peso muerto rumano a una pierna','3 × 8 por pierna','Mancuerna en la mano contraria a la pierna de apoyo.']]},
+        ['4. Peso muerto convencional con barra','3 × 5','RIR 2. Espalda neutra y barra pegada al cuerpo. Fuerza total para los choques.',['dl',1.08]]]},
       {h:'Core y cuello',items:[
         ['5a. Plancha con remo (renegade row)','3 × 6 por lado','Pies abiertos y cadera quieta.'],
         ['5b. Caminata de granjero pesada','3 × 30 m',''],
@@ -337,10 +340,10 @@ function sessionFor(key, w){
         ['1c. Pogos laterales','2 × 10','']]},
       {h:'Potencia y fuerza',items:[
         ['2. Peso muerto con mancuernas y triple extensión','4 × 5','Bajás como en el rumano y subís explosivo extendiendo cadera, rodillas y tobillos hasta quedar en puntas de pie. Peso moderado: importa la velocidad.'],
-        ['3. Contraste: press de banco + flexiones explosivas','3 × (5 + 5)','5 pesadas e inmediatamente 5 flexiones rápidas.',['bench',1.08]],
+        ['3. Contraste: press de banco con barra + lanzamiento de pecho','3 × (5 + 5)','5 pesadas e inmediatamente 5 lanzamientos de pecho contra la pared con balón medicinal de 5–6 kg, lo más fuerte posible.',['bench',1.08]],
         ['4. Remo + dominadas','3 × 6 + 3 × 5','']]},
       {h:'Core',items:[
-        ['5. Leñador con mancuerna','3 × 8 por lado','Rotación potente de abajo arriba.'],
+        ['5. Lanzamiento rotacional de balón medicinal','3 × 6 por lado','De costado a la pared con balón de 5–6 kg. Girá desde la cadera y lanzá con todo: es el gesto del choque de hombro y del despeje.'],
         ['6. Plancha lateral con pierna arriba','2 × 20″ por lado','']]}]};
   }
 
@@ -483,9 +486,9 @@ function renderPlan(){
 /* ---------- pestaña TESTS ---------- */
 const FIELDS=[
   ['sprint30','Sprint 30 m','s',2,true],['sprint10','Parcial 10 m','s',2,true],['cmj','Salto vertical','cm',0,false],
-  ['t2000','2000 m','',0,true],['sq','Sentadilla goblet (8 reps)','kg',1,false],['rdl','Peso muerto rumano (8 reps)','kg por mancuerna',1,false],['bench','Press de banco (8 reps)','kg por mancuerna',1,false]
+  ['t2000','2000 m','',0,true],['sq','Sentadilla con barra (8 reps)','kg',1,false],['dl','Peso muerto con barra (8 reps)','kg',1,false],['bench','Press de banco con barra (8 reps)','kg',1,false]
 ];
-const fmtVal=(f,v)=>{ if(v==null||v==='') return '—'; const d=FIELDS.find(x=>x[0]===f); if(f==='t2000') return mmss(v); return `${num(+v,d[3])} ${d[2]}`; };
+const fmtVal=(f,v)=>{ if(v==null||v==='') return '—'; const d=FIELDS.find(x=>x[0]===f); if(f==='t2000') return mmss(v); if(d[2]==='kg') return `${String(+v).replace('.',',')} kg`; return `${num(+v,d[3])} ${d[2]}`; };
 function testStatus(t){
   if(hasResults(t.id)) return ['Cargado','st-ok'];
   const diff=daysBetween(TODAY,t.date);
@@ -502,10 +505,10 @@ function formHtml(t){
     <div class="field"><label for="${t.id}-sprint10">Parcial 10 m (s, opcional)</label><input id="${t.id}-sprint10" inputmode="decimal" placeholder="1,85" value="${v('sprint10')}"></div>
     <div class="field"><label for="${t.id}-cmj">Salto vertical (cm)</label><input id="${t.id}-cmj" inputmode="decimal" placeholder="38" value="${v('cmj')}"></div>
     <div class="field"><label for="${t.id}-tmin">2000 m (min : seg)</label><div class="time"><input id="${t.id}-tmin" inputmode="numeric" placeholder="8" value="${tm}" aria-label="Minutos"><span>:</span><input id="${t.id}-tsec" inputmode="numeric" placeholder="30" value="${ts}" aria-label="Segundos"></div></div>
-    <p class="full eyebrow">Pesos: 8 repeticiones con RIR 2</p>
-    <div class="field"><label for="${t.id}-sq">Sentadilla goblet (kg)</label><input id="${t.id}-sq" inputmode="decimal" placeholder="20" value="${v('sq')}"></div>
-    <div class="field"><label for="${t.id}-rdl">Peso muerto rum. (kg c/u)</label><input id="${t.id}-rdl" inputmode="decimal" placeholder="18" value="${v('rdl')}"></div>
-    <div class="field"><label for="${t.id}-bench">Press de banco (kg c/u)</label><input id="${t.id}-bench" inputmode="decimal" placeholder="16" value="${v('bench')}"></div>
+    <p class="full eyebrow">Pesos con barra: 8 repeticiones con RIR 2 (total con discos)</p>
+    <div class="field"><label for="${t.id}-sq">Sentadilla (kg)</label><input id="${t.id}-sq" inputmode="decimal" placeholder="50" value="${v('sq')}"></div>
+    <div class="field"><label for="${t.id}-dl">Peso muerto (kg)</label><input id="${t.id}-dl" inputmode="decimal" placeholder="60" value="${v('dl')}"></div>
+    <div class="field"><label for="${t.id}-bench">Press de banco (kg)</label><input id="${t.id}-bench" inputmode="decimal" placeholder="45" value="${v('bench')}"></div>
     <div class="field full row"><button class="btn" type="submit">Guardar y actualizar el plan</button><button class="btn ghost" type="button" onclick="openForm=null;renderTests()">Cancelar</button></div>
   </form>`;
 }
@@ -576,7 +579,7 @@ function parseNum(s){ s=String(s||'').trim().replace(',','.'); if(s==='') return
 function saveTest(ev,id){
   ev.preventDefault();
   const g=k=>parseNum(document.getElementById(`${id}-${k}`).value);
-  const r={sprint30:g('sprint30'),sprint10:g('sprint10'),cmj:g('cmj'),sq:g('sq'),rdl:g('rdl'),bench:g('bench')};
+  const r={sprint30:g('sprint30'),sprint10:g('sprint10'),cmj:g('cmj'),sq:g('sq'),dl:g('dl'),bench:g('bench')};
   const m=g('tmin'), s=g('tsec');
   r.t2000=(m==null&&s==null)?null:(m||0)*60+(s||0);
   const bad=Object.entries(r).find(([k,v])=>v!==null&&(isNaN(v)||v<=0));
@@ -615,17 +618,17 @@ function renderGuia(){
     <div class="wd"><span class="d">Sáb</span><span class="k">D</span><span class="t">Campo: intermitentes, agilidad y pelota</span></div>
   </div><p class="muted">Domingo, descanso total. Si un día no podés, corré la sesión al día siguiente, pero nunca hagas dos sesiones de campo seguidas.</p></div>
   <div class="card"><h2>Entrada en calor</h2>
-    <h3>Gimnasio · 10–12′</h3><ul><li>5′ de bici o elíptico suave.</li><li>90/90 de cadera ×5 por lado y rodilla a la pared ×10 por lado.</li><li>Caminata lateral con banda 2 × 10, puente de glúteo 2 × 10, almeja 1 × 12 por lado.</li><li>Dos series livianas del primer ejercicio.</li></ul>
+    <h3>Gimnasio · 10–12′</h3><ul><li>5′ de bici o elíptico suave.</li><li>90/90 de cadera ×5 por lado y rodilla a la pared ×10 por lado.</li><li>Abducción de cadera en polea baja 2 × 10 por lado (o caminata lateral con tu banda), puente de glúteo 2 × 10, almeja 1 × 12 por lado.</li><li>Dos series livianas del primer ejercicio.</li></ul>
     <h3>Campo · 12–15′</h3><ul><li>5′ de trote suave.</li><li>20 m de cada uno: balanceo de piernas, zancada con rotación, sentadilla lateral, skipping, talones, carioca, lateral y de espaldas.</li><li>3 progresivos de 40 m al 60, 75 y 90%.</li><li>Al final: 5′ caminando y estiramiento suave.</li></ul></div>
   <div class="card"><h2>Cómo cargar</h2><ul>
     <li><b>RIR</b> son las repeticiones que te quedan en reserva. RIR 2: podías hacer 2 más bien hechas. Diciembre con RIR 3, enero con RIR 1–2. Nunca al fallo.</li>
-    <li><b>Subir peso:</b> si completás todas las series con el máximo de repeticiones y te quedan 2 en reserva, subí 2 kg por mancuerna.</li>
+    <li><b>Subir peso:</b> si completás todas las series con el máximo de repeticiones y te quedan 2 en reserva, subí 2,5 kg en la barra o por mancuerna.</li>
     <li><b>Pesos sugeridos:</b> salen de tu test de 8 repeticiones. Son un punto de partida: si sobra o falta, ajustá.</li>
     <li><b>Descansos:</b> fuerza 90″ a 2′. Superseries: 60–90″ después de cada par. Saltos y sprints: pausa completa.</li></ul></div>
   <div class="card"><h2>Semáforo de rodilla</h2><p class="muted">Dolor de 0 a 10, durante el ejercicio y a la mañana siguiente.</p>
     <div class="light">
       <div class="lt" style="--c:var(--good)"><b>0 a 3</b><span>Seguí normal.</span></div>
-      <div class="lt" style="--c:var(--warn)"><b>4 a 5</b><span>Bajá rango o peso. Usá la versión a cajón o isométrica.</span></div>
+      <div class="lt" style="--c:var(--warn)"><b>4 a 5</b><span>Bajá rango o peso. Usá la versión a banco o isométrica.</span></div>
       <div class="lt" style="--c:var(--bad)"><b>6 o más</b><span>Pará ese ejercicio. Si al otro día está peor, cortá saltos y sprints y consultá al kinesiólogo.</span></div>
     </div>
     <ul><li>Corré y saltá en pasto. Evitá bajadas largas y escaleras con peso.</li><li>Rodilla alineada con el segundo dedo del pie, sin irse hacia adentro.</li><li>Aterrizá suave y sin ruido.</li></ul></div>
@@ -641,7 +644,7 @@ function renderGuia(){
     <div class="field"><label for="imp">Pegá una copia para restaurarla</label><textarea id="imp" placeholder='{"done":...}'></textarea></div>
     <div class="row"><button class="btn small" type="button" id="imp-btn" onclick="importData()">Restaurar copia</button></div>
   </div>
-  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo. Versión 1.1.</p>`;
+  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo. Versión 1.2.</p>`;
 }
 function exportData(){ const t=JSON.stringify({done,tests:res}); if(A) A.share(t); else copyText(t); }
 let impArmed=false;
