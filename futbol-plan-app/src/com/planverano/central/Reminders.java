@@ -24,7 +24,7 @@ final class Reminders {
     // id, fecha y hora local, título, texto, pestaña a abrir, test que debe estar cargado para omitirlo (o null)
     static final String[][] EVENTS = {
         {"1", "2026-12-08 20:00", "Mañana arranca el plan",
-            "Semana 1: sesión A el miércoles y C el viernes. Anotá con qué peso hacés 8 repeticiones con RIR 2 en sentadilla, peso muerto y press de banco con barra.", "hoy", null},
+            "Semana 1: sesión A el miércoles y C el viernes. Empezás en el 2do piso con la entrada en calor y después bajás a la barra. Usá los pesos sugeridos de la app.", "hoy", null},
         {"2", "2026-12-10 20:00", "Test en 2 días (sábado 12)",
             "Sprint 30 m, salto vertical y 2000 m. Buscá un lugar con 400 m medidos o usá el GPS, y llevá el celular para filmar el sprint.", "tests", null},
         {"3", "2026-12-11 20:00", "Mañana es el test",

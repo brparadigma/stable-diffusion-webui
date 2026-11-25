@@ -67,6 +67,7 @@ details.sess.is-done .sk{background:var(--accent);color:var(--on-accent)}
 .done input{width:24px;height:24px;accent-color:var(--accent);margin:0}
 .sbody{padding:0 14px 16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)}
 .blk{display:flex;flex-direction:column;padding-top:12px}
+.loc{display:inline-block;margin-right:8px;padding:1px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);letter-spacing:.04em}
 .blk h4{margin:0 0 4px;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 .ex{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px dashed var(--line)}
 .ex:last-child{border-bottom:0}
@@ -224,7 +225,8 @@ function fieldDone(id){ const r=res[id]; return !!(r && r.t2000); }
 function hasResults(id){ const r=res[id]; return !!(r && (r.t2000||r.sprint30||r.cmj||r.sq||r.dl||r.bench)); }
 
 /* ---------- sesiones ---------- */
-const WU_G = ['Entrada en calor de gimnasio','10–12′','Ver la pestaña Guía.'];
+const UP='2do piso', DOWN='Planta baja';
+const WU_G = ['Entrada en calor','10–12′','Bici o elíptico 5′ si hay arriba; si no, trote suave y skipping en el lugar. Después movilidad de cadera y tobillo, puente de glúteo y caminata lateral con tu banda.'];
 const WU_C = ['Entrada en calor de campo','12–15′','Incluye 3 progresivos de 40 m al 60, 75 y 90%.'];
 const BALL = n => ['Técnica con pelota', n, 'Conducción con los dos perfiles, control orientado, pases largos de 30–40 m y cabeceo: lanzala alto y cabeceá a un punto.'];
 
@@ -252,100 +254,98 @@ function sessionFor(key, w){
     callout:'Tenés que terminar con ganas de más. Mañana descanso y el sábado arrancás.'};
 
   if(key==='A'){
-    if(F1) return {title:'Fuerza de piernas y prevención',place:'Gimnasio',dur:s1?'50′':'60–70′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Rodilla',items:[['1. Sentadilla isométrica contra la pared',`${sets} × 30–45″`,'Rodillas a 60–70°. Sin dolor. Calma la rótula y activa cuádriceps.']]},
-      {h:'Fuerza (superseries: alternás a y b)',items:[
-        ['2a. Sentadilla con barra a banco',`${sets} × 8`,s1?'Test de pesos: buscá con qué peso hacés 8 repeticiones con RIR 2 y cargalo en la pestaña Tests.':'Dentro del rack y con las seguridades puestas. Bajá en 3″ hasta tocar el banco plano y subí. Si el banco te queda bajo y molesta la rodilla, poné un step arriba. RIR 3.',s1?null:['sq',.9]],
-        ['2b. Copenhagen corto (apoyo en rodilla)',`${sets} × 15–20″ por lado`,'Aductores. Clave para prevenir pubalgia.'],
-        ['3a. Peso muerto rumano con barra',`${sets} × 8`,s1?'Test de pesos: hacé peso muerto convencional, 8 repeticiones con RIR 2, y cargalo en Tests.':'Barra pegada a las piernas, espalda neutra, rodillas apenas flexionadas. Sentí los isquios.',s1?null:['dl',.8]],
-        ['3b. Plancha frontal',`${sets} × 30–40″`,'Glúteos apretados, sin hundir la cadera.'],
-        ['4a. Subida al banco (step-up)',`${sets} × 8 por pierna`,'Banco plano o step con elevadores. Rodilla alineada con el pie. Cuando te quede fácil, con mancuernas.'],
-        ['4b. Gemelo a una pierna en escalón',`${sets} × 12–15`,'Bajá lento.']]},
-      {h:'Prevención',items:[
-        ['5. Nórdico excéntrico',{1:'2 × 3',2:'3 × 4',3:'3 × 5',4:'2 × 4'}[n],'Talones anclados bajo un banco cargado o que alguien te los sostenga. Bajá lo más lento posible y volvé con las manos.'],
-        ['6. Caminata con mancuerna de un lado',`${sets} × 20 m por lado`,'Tronco firme, sin inclinarte. Estabilidad para los choques.']]}]};
-    if(F2) return {title:'Fuerza de piernas: series pesadas',place:'Gimnasio',dur:'70–80′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Potencia',items:[['1a. Salto al step alto','4 × 3','Step con todos sus elevadores, nunca steps sueltos apilados. Aterrizaje suave y bajá caminando. Pausa 90″. Si el step se mueve, hacé salto vertical máximo tocando una marca en la pared.'],
-        ['1b. Subida explosiva al banco','3 × 4 por pierna','Un pie arriba del banco plano: empujá fuerte con esa pierna y subí con impulso de brazos, como en una arrancada. Bajá caminando. Pausa 60″.']]},
-      {h:'Fuerza',items:[
-        ['2. Sentadilla con barra',`${n===7?5:4} × 6`,'RIR 2. En el rack con seguridades. Hasta paralelo si la rodilla está en verde; si no, a banco.',['sq',1.05]],
-        ['3. Sentadilla búlgara con mancuernas','3 × 6–8 por pierna','Pie de atrás sobre el banco. Torso apenas inclinado.'],
-        ['4. Hip thrust con barra','3 × 8','Espalda en el banco y barra sobre la cadera con una almohadilla o toalla. Arriba, 1″ de pausa. Si hay máquina de hip thrust, sirve igual.']]},
-      {h:'Prevención (superserie)',items:[
-        ['5. Nórdico',n===7?'3 × 6':'3 × 5','Cada semana intentá frenar un poco más abajo.'],
-        ['6a. Copenhagen largo (pie en el banco)','3 × 15–20″ por lado','Si es mucho, volvé al apoyo en rodilla.'],
-        ['6b. Gemelo a una pierna con mancuerna','3 × 10','']]}]};
-    if(F3) return {title:'Piernas: potencia y contraste',place:'Gimnasio',dur:'70–75′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Potencia',items:[
-        ['1a. Sentadilla con salto con mancuernas livianas','4 × 4','Entre 5 y 10 kg por mano. Máxima altura y aterrizaje suave.'],
-        ['1b. Subida explosiva al banco con mancuernas livianas','3 × 4 por pierna','Entre 4 y 8 kg por mano. Lo más rápido posible y bajá caminando.'],
-        ['2. Contraste: sentadilla con barra + salto vertical',n===9?'4 × (4 + 3)':'3 × (4 + 3)','4 sentadillas pesadas (RIR 2) e inmediatamente 3 saltos verticales máximos. Pausa 2–3′.',['sq',1.1]],
-        ['3. Búlgara con mancuernas + saltos en zancada','2 × (5 + 4)','5 búlgaras por pierna e inmediatamente 4 saltos en zancada alternando. Pausa 2′.'],
-        ['4. Hip thrust explosivo','3 × 5','Bajá controlado y subí lo más rápido posible.'],
-        ['5. Pogos (saltitos de tobillo)','3 × 15','Rodillas casi rígidas, contacto corto con el piso.']]},
-      {h:'Mantenimiento',items:[
-        ['6. Nórdico','2 × 5',''],
-        ['7. Copenhagen largo','2 × 20″ por lado',''],
-        ['8. Sentadilla isométrica contra la pared','2 × 45″','Cierre para la rodilla.']]}]};
-    if(TP) return {title:'Piernas: potencia corta',place:'Gimnasio',dur:'40′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Sesión',items:[
-        ['1. Salto al step alto','3 × 3','Pausa completa.'],
+    if(F1) return {title:'Fuerza de piernas y prevención',place:'Gimnasio',dur:s1?'55′':'65–75′',blocks:[
+      {at:UP,h:'Entrada en calor y rodilla',items:[WU_G,
+        ['1. Sentadilla isométrica contra la pared',`${sets} × 30–45″`,'Rodillas a 60–70°. Sin dolor. Calma la rótula y activa cuádriceps.']]},
+      {at:DOWN,h:'Fuerza con barra (superseries: alternás a y b)',items:[
+        ['2a. Sentadilla con barra hasta las seguridades',`${sets} × 8`,`${s1?'Semana de técnica: usá el peso sugerido o un poco menos. ':''}Dentro del rack, con las barras de seguridad apenas arriba de paralelo: bajá en 3″ hasta rozarlas y subí. Si molesta la rodilla, subilas un agujero. RIR 3.`,['sq',.9]],
+        ['2b. Plancha frontal',`${sets} × 30–40″`,'Al lado del rack, en una colchoneta. Glúteos apretados, sin hundir la cadera.'],
+        ['3a. Peso muerto rumano con barra',`${sets} × 8`,'Barra pegada a las piernas, espalda neutra, rodillas apenas flexionadas. Sentí los isquios.',['dl',.8]],
+        ['3b. Gemelo a una pierna en un disco o escalón',`${sets} × 12–15`,'Bajá lento.']]},
+      {at:UP,h:'Prevención',items:[
+        ['4a. Subida al step (step-up)',`${sets} × 8 por pierna`,'Step con todos sus elevadores. Rodilla alineada con el pie. Cuando te quede fácil, sostené un balón medicinal contra el pecho.'],
+        ['4b. Copenhagen corto en el step',`${sets} × 15–20″ por lado`,'Rodilla de arriba apoyada en el step. Aductores: clave contra la pubalgia.'],
+        ['5. Nórdico en la espaldera',{1:'2 × 3',2:'3 × 4',3:'3 × 5',4:'2 × 4'}[n],'Rodillas en una colchoneta y talones trabados bajo el barrote más bajo. Bajá lo más lento posible y volvé con las manos.'],
+        ['6. Caminata con saco de un lado',`${sets} × 20 m por lado`,'Saco de 15–20 kg colgando de una mano. Tronco firme, sin inclinarte.']]}]};
+    if(F2) return {title:'Fuerza de piernas: series pesadas',place:'Gimnasio',dur:'75–85′',blocks:[
+      {at:UP,h:'Entrada en calor y potencia',items:[WU_G,
+        ['1a. Salto al step alto','4 × 3','Step con todos sus elevadores, nunca steps sueltos apilados. Aterrizaje suave y bajá caminando. Pausa 90″. Si el step se mueve, hacé salto vertical tocando una marca en la pared.'],
+        ['1b. Subida explosiva al step','3 × 4 por pierna','Un pie arriba del step: empujá fuerte con esa pierna y subí con impulso de brazos, como en una arrancada. Bajá caminando.']]},
+      {at:DOWN,h:'Fuerza',items:[
+        ['2. Sentadilla con barra',`${n===7?5:4} × 6`,'RIR 2. En el rack con seguridades. Hasta paralelo si la rodilla está en verde; si no, hasta las seguridades como en diciembre.',['sq',1.05]],
+        ['3. Sentadilla búlgara con mancuernas','3 × 6–8 por pierna','Pie de atrás sobre un banco. Torso apenas inclinado.'],
+        ['4. Hip thrust con barra o en máquina','3 × 8','Barra sobre la cadera con almohadilla o toalla. Arriba, 1″ de pausa.']]},
+      {at:UP,h:'Prevención',items:[
+        ['5. Nórdico en la espaldera',n===7?'3 × 6':'3 × 5','Cada semana intentá frenar un poco más abajo.'],
+        ['6a. Copenhagen largo en el step','3 × 15–20″ por lado','Pie apoyado en el step. Si es mucho, volvé al apoyo en rodilla.'],
+        ['6b. Gemelo a una pierna con kettlebell','3 × 10','Kettlebell de 12 kg en la mano, punta del pie en el borde del step.']]}]};
+    if(F3) return {title:'Piernas: potencia y fuerza',place:'Gimnasio',dur:'70–75′',blocks:[
+      {at:UP,h:'Entrada en calor y potencia',items:[WU_G,
+        ['1a. Sentadilla con salto con saco','4 × 4','Saco de 10–15 kg sobre los hombros. Máxima altura y aterrizaje suave. Pausa 90″.'],
+        ['1b. Subida explosiva al step con balón medicinal','3 × 4 por pierna','Balón de 5–6 kg contra el pecho. Lo más rápido posible.'],
+        ['1c. Saltos en zancada alternos',n===9?'4 × 6':'3 × 6','Cambiás de pierna en el aire. Aterrizaje suave.'],
+        ['1d. Pogos (saltitos de tobillo)','3 × 15','Rodillas casi rígidas, contacto corto con el piso.']]},
+      {at:DOWN,h:'Fuerza',items:[
+        ['2. Sentadilla con barra',n===9?'4 × 4':'3 × 4','RIR 2. Pesada, bajando controlado y subiendo lo más rápido posible. Pausa 2–3′.',['sq',1.1]],
+        ['3. Búlgara con mancuernas','2 × 5 por pierna','Pesada, RIR 2.'],
+        ['4. Hip thrust explosivo con barra o en máquina','3 × 5','Bajá controlado y subí lo más rápido posible.']]},
+      {at:UP,h:'Mantenimiento',items:[
+        ['5. Nórdico en la espaldera','2 × 5',''],
+        ['6. Copenhagen largo en el step','2 × 20″ por lado',''],
+        ['7. Sentadilla isométrica contra la pared','2 × 45″','Cierre para la rodilla.']]}]};
+    if(TP) return {title:'Piernas: potencia corta',place:'Gimnasio',dur:'45′',blocks:[
+      {at:UP,h:'Entrada en calor y potencia',items:[WU_G,['1. Salto al step alto','3 × 3','Pausa completa.']]},
+      {at:DOWN,h:'Fuerza',items:[
         ['2. Sentadilla con barra','2 × 3','RIR 3: pesado pero sobrado.',['sq',1.08]],
-        ['3. Hip thrust explosivo','2 × 5',''],
-        ['4. Nórdico','1 × 4',''],
-        ['5. Copenhagen','2 × 15″ por lado','']]}],
+        ['3. Hip thrust explosivo','2 × 5','']]},
+      {at:UP,h:'Prevención',items:[
+        ['4. Nórdico en la espaldera','1 × 4',''],
+        ['5. Copenhagen en el step','2 × 15″ por lado','']]}],
       callout:'Hacé menos de lo que te pide el cuerpo. Esta semana el objetivo es llegar fresco.'};
   }
 
   if(key==='C'){
-    if(F1) return {title:'Tren superior, aterrizajes y core',place:'Gimnasio',dur:s1?'50′':'60–70′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Pliometría de aprendizaje',items:[
+    if(F1) return {title:'Tren superior, aterrizajes y core',place:'Gimnasio',dur:s1?'55′':'65–70′',blocks:[
+      {at:UP,h:'Entrada en calor y aterrizajes',items:[WU_G,
         ['1a. Salto vertical y aterrizaje clavado',`${sets} × 5`,'Aterrizá y quedate quieto 2″. Rodillas alineadas, sin ruido.'],
         ['1b. Saltito lateral sobre una línea','2 × 6 por lado','Aterrizaje estable. En una pierna si te sentís firme.']]},
-      {h:'Fuerza (superseries)',items:[
-        ['2a. Press de banco con barra',`${sets} × 8`,s1?'Test de pesos: 8 repeticiones con RIR 2. Cargalo en Tests.':'Con seguridades o alguien que te asista. RIR 3.',s1?null:['bench',.95]],
-        ['2b. Remo a una mano con mancuerna',`${sets} × 10 por brazo`,''],
+      {at:DOWN,h:'Fuerza (superseries)',items:[
+        ['2a. Press de banco con barra',`${sets} × 8`,`${s1?'Semana de técnica: usá el peso sugerido o un poco menos. ':''}Con seguridades o alguien que te asista. RIR 3.`,['bench',.95]],
+        ['2b. Remo a una mano con mancuerna',`${sets} × 10 por brazo`,'Apoyado en un banco, o remo sentado en polea baja si el banco está ocupado.'],
         ['3a. Press militar arrodillado a una mano',`${sets} × 8 por brazo`,'Con la rodilla del lado del brazo apoyada. Glúteo apretado y sin inclinarte hacia el costado.'],
-        ['3b. Dominadas (asistidas o solo la bajada) o jalón',`${sets} × 6–10`,'Si no hacés dominadas, saltá arriba y bajá en 4″.'],
+        ['3b. Dominadas (asistidas o solo la bajada) o jalón',`${sets} × 6–10`,'Si no hacés dominadas, usá la máquina asistida.'],
         ['4a. Zancada hacia atrás con mancuernas',`${sets} × 8 por pierna`,'Hacia atrás carga menos la rodilla.'],
         ['4b. Puente de glúteo a una pierna',`${sets} × 12 por pierna`,'']]},
-      {h:'Core y cuello',items:[
+      {at:DOWN,h:'Core y cuello (en una colchoneta)',items:[
         ['5. Dead bug + plancha lateral',`${sets} × 10 + 30″ por lado`,'Lumbar pegada al piso en el dead bug.'],
         ['6. Plancha con arrastre de mancuerna','2 × 6 por lado','En plancha alta, pasá la mancuerna de un lado al otro con una mano sin girar la cadera. Estabilidad para las divididas.'],
         ['7. Isometría de cuello con la mano','2 × 10″ en 4 direcciones','Empujá sin mover la cabeza. Para cabecear firme.']]}]};
-    if(F2) return {title:'Tren superior pesado y saltos de central',place:'Gimnasio',dur:'70′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Pliometría',items:[
-        ['1a. Salto cabezazo','4 × 3','Dos pasos y salto con impulso de brazos para tocar algo alto.'],
-        ['1b. Salto de patinador (skater)','3 × 5 por lado','Aterrizá clavado en una pierna 1″.']]},
-      {h:'Fuerza (superseries)',items:[
+    if(F2) return {title:'Tren superior pesado y saltos de central',place:'Gimnasio',dur:'70–75′',blocks:[
+      {at:UP,h:'Entrada en calor y potencia',items:[WU_G,
+        ['1a. Salto cabezazo','4 × 3','Dos pasos y salto con impulso de brazos para tocar algo alto, como el barrote de arriba de la espaldera o una marca en la pared.'],
+        ['1b. Salto de patinador (skater)','3 × 5 por lado','Aterrizá clavado en una pierna 1″.'],
+        ['1c. Lanzamiento de pecho con balón medicinal','3 × 5','Balón de 5–6 kg contra la pared, lo más fuerte posible.']]},
+      {at:DOWN,h:'Fuerza (superseries)',items:[
         ['2a. Press de banco con barra','4 × 6','RIR 2. Con seguridades o alguien que te asista.',['bench',1.05]],
-        ['2b. Remo pesado a una mano','4 × 6 por brazo',''],
+        ['2b. Remo pesado a una mano','4 × 6 por brazo','En banco o en polea baja.'],
         ['3a. Push press con mancuernas','3 × 5','Empujá con las piernas. Fuerza para los choques.'],
         ['3b. Dominadas','3 × máximo','Si pasás de 8, colgate una mancuerna.'],
-        ['4. Peso muerto convencional con barra','3 × 5','RIR 2. Espalda neutra y barra pegada al cuerpo. Fuerza total para los choques.',['dl',1.08]]]},
-      {h:'Core y cuello',items:[
+        ['4. Peso muerto convencional con barra','3 × 5','RIR 2. Espalda neutra y barra pegada al cuerpo.',['dl',1.08]]]},
+      {at:DOWN,h:'Core y cuello',items:[
         ['5a. Plancha con remo (renegade row)','3 × 6 por lado','Pies abiertos y cadera quieta.'],
-        ['5b. Caminata de granjero pesada','3 × 30 m',''],
+        ['5b. Caminata de granjero pesada','3 × 30 m','Una mancuerna pesada en cada mano. Si no hay lugar para caminar, sostenelas quieto 30″.'],
         ['6. Isometría de cuello','2 × 12″ en 4 direcciones','']]}]};
-    if(F3) return {title:'Potencia total y core rotacional',place:'Gimnasio',dur:'60′',blocks:[
-      {h:'Previo',items:[WU_G]},
-      {h:'Pliometría',items:[
+    if(F3) return {title:'Potencia total y fuerza de empuje',place:'Gimnasio',dur:'65′',blocks:[
+      {at:UP,h:'Entrada en calor y potencia',items:[WU_G,
         ['1a. Salto cabezazo con 3 pasos de carrera','4 × 3','Máxima altura y cabeceá en el aire.'],
         ['1b. Skater reactivo','3 × 6 por lado','Sin pausa, rebote rápido.'],
-        ['1c. Pogos laterales','2 × 10','']]},
-      {h:'Potencia y fuerza',items:[
-        ['2. Peso muerto con mancuernas y triple extensión','4 × 5','Bajás como en el rumano y subís explosivo extendiendo cadera, rodillas y tobillos hasta quedar en puntas de pie. Peso moderado: importa la velocidad.'],
-        ['3. Contraste: press de banco con barra + lanzamiento de pecho','3 × (5 + 5)','5 pesadas e inmediatamente 5 lanzamientos de pecho contra la pared con balón medicinal de 5–6 kg, lo más fuerte posible.',['bench',1.08]],
-        ['4. Remo + dominadas','3 × 6 + 3 × 5','']]},
-      {h:'Core',items:[
-        ['5. Lanzamiento rotacional de balón medicinal','3 × 6 por lado','De costado a la pared con balón de 5–6 kg. Girá desde la cadera y lanzá con todo: es el gesto del choque de hombro y del despeje.'],
-        ['6. Plancha lateral con pierna arriba','2 × 20″ por lado','']]}]};
+        ['1c. Lanzamiento de pecho con balón medicinal','3 × 5','Balón de 5–6 kg contra la pared.'],
+        ['1d. Lanzamiento rotacional de balón medicinal','3 × 6 por lado','De costado a la pared. Girá desde la cadera y lanzá con todo: es el gesto del choque de hombro y del despeje.'],
+        ['1e. Peso muerto con saco y triple extensión','4 × 5','Saco de 20–25 kg. Bajás como en el rumano y subís explosivo extendiendo cadera, rodillas y tobillos hasta quedar en puntas de pie.']]},
+      {at:DOWN,h:'Fuerza',items:[
+        ['2. Contraste: press de banco con barra + flexiones explosivas','3 × (5 + 5)','5 pesadas e inmediatamente 5 flexiones lo más rápidas posible al lado del banco.',['bench',1.08]],
+        ['3. Remo + dominadas','3 × 6 + 3 × 5',''],
+        ['4. Plancha lateral con pierna arriba','2 × 20″ por lado','']]}]};
   }
 
   if(key==='B'){
@@ -406,7 +406,7 @@ function sessionFor(key, w){
 /* ---------- render de sesiones ---------- */
 function sessionCard(w,i,open){
   const [date,key]=w.days[i]; const s=sessionFor(key,w); const id=`w${w.n}-${i}`; const isDone=!!done[id];
-  const blocks=s.blocks.map(b=>`<div class="blk"><h4>${esc(b.h)}</h4>${b.items.map(it=>{
+  const blocks=s.blocks.map(b=>`<div class="blk"><h4>${b.at?`<span class="loc">${esc(b.at)}</span>`:''}${esc(b.h)}</h4>${b.items.map(it=>{
     const sg=it[3]?sug(it[3][0],it[3][1]):null;
     return `<div class="ex"><div class="top"><span class="nm">${esc(it[0])}</span><span class="ds">${esc(it[1])}</span></div>${it[2]?`<span class="nt">${esc(it[2])}</span>`:''}${sg?`<span class="sug">${esc(sg)}</span>`:''}</div>`;}).join('')}</div>`).join('');
   const label=key==='T'?'T':key==='X'?'★':key;
@@ -619,8 +619,13 @@ function renderGuia(){
     <div class="wd"><span class="d">Sáb</span><span class="k">D</span><span class="t">Campo: intermitentes, agilidad y pelota</span></div>
   </div><p class="muted">Domingo, descanso total. Si un día no podés, corré la sesión al día siguiente, pero nunca hagas dos sesiones de campo seguidas.</p></div>
   <div class="card"><h2>Entrada en calor</h2>
-    <h3>Gimnasio · 10–12′</h3><ul><li>5′ de bici o elíptico suave.</li><li>90/90 de cadera ×5 por lado y rodilla a la pared ×10 por lado.</li><li>Abducción de cadera en polea baja 2 × 10 por lado (o caminata lateral con tu banda), puente de glúteo 2 × 10, almeja 1 × 12 por lado.</li><li>Dos series livianas del primer ejercicio.</li></ul>
+    <h3>Gimnasio · 10–12′, en el 2do piso</h3><ul><li>5′ de bici o elíptico si hay arriba; si no, trote suave y skipping en el lugar.</li><li>90/90 de cadera ×5 por lado y rodilla a la pared ×10 por lado.</li><li>Puente de glúteo 2 × 10, almeja 1 × 12 por lado y caminata lateral con tu banda 2 × 10.</li></ul>
     <h3>Campo · 12–15′</h3><ul><li>5′ de trote suave.</li><li>20 m de cada uno: balanceo de piernas, zancada con rotación, sentadilla lateral, skipping, talones, carioca, lateral y de espaldas.</li><li>3 progresivos de 40 m al 60, 75 y 90%.</li><li>Al final: 5′ caminando y estiramiento suave.</li></ul></div>
+  <div class="card"><h2>Cómo moverte en el gimnasio</h2><ul>
+    <li><b>2do piso:</b> entrada en calor, saltos, lanzamientos con balón, step, nórdico en la espaldera y Copenhagen. Usás lo que hay arriba: step, sacos, balones y kettlebells.</li>
+    <li><b>Planta baja:</b> todo lo de barra y banco, mancuernas, polea, dominadas y core en colchoneta.</li>
+    <li><b>Orden:</b> siempre empezás arriba, porque los saltos se hacen descansado. Después bajás a la fuerza. En las sesiones A volvés a subir al final para el nórdico y el Copenhagen.</li>
+    <li>No hace falta subir mancuernas.</li></ul></div>
   <div class="card"><h2>Cómo cargar</h2><ul>
     <li><b>RIR</b> son las repeticiones que te quedan en reserva. RIR 2: podías hacer 2 más bien hechas. Diciembre con RIR 3, enero con RIR 1–2. Nunca al fallo.</li>
     <li><b>Subir peso:</b> si completás todas las series con el máximo de repeticiones y te quedan 2 en reserva, subí 2,5 kg en la barra o por mancuerna.</li>
@@ -645,7 +650,7 @@ function renderGuia(){
     <div class="field"><label for="imp">Pegá una copia para restaurarla</label><textarea id="imp" placeholder='{"done":...}'></textarea></div>
     <div class="row"><button class="btn small" type="button" id="imp-btn" onclick="importData()">Restaurar copia</button></div>
   </div>
-  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo. Versión 1.3.</p>`;
+  <p class="muted" style="font-size:.8rem">Plan general armado con tus datos. No reemplaza la evaluación médica ni el criterio de tu kinesiólogo. Versión 1.4.</p>`;
 }
 function exportData(){ const t=JSON.stringify({done,tests:res}); if(A) A.share(t); else copyText(t); }
 let impArmed=false;
